@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teste WebSocket - Impostor</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <style>
+    body { background: #111; color: #eee; font-family: Arial; padding: 20px; }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+    }
+    .log {
+      background: #222;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      border-radius: 5px;
+      margin-top: 20px;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔌 Teste de WebSocket</h2>
+
+  <label>Nome do jogador:</label><br>
+  <input id="name" placeholder="Ex: Bruno" /><br><br>
+
+  <label>Código da sala:</label><br>
+  <input id="room" placeholder="Ex: ABC12" /><br><br>
+
+  <button onclick="connectWS()">Conectar WebSocket</button>
+  <button onclick="joinRoom()">Entrar na sala</button>
+  <button onclick="startRoom()">Iniciar sala</button>
+
+  <div class="log" id="log"></div>
+
+  <script>
+    let socket = null;
+
+    function log(msg) {
+      const box = document.getElementById("log");
+      box.innerHTML += msg + "\n";
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function connectWS() {
+      socket = io("http://localhost:3333");
+
+      socket.on("connect", () => log("🟢 Conectado: " + socket.id));
+
+      socket.on("disconnect", () => log("🔴 Desconectado"));
+
+      socket.on("room:playerJoined", (data) => {
+        log(`👤 Jogador entrou: ${data.name} (ID: ${data.id})`);
+      });
+
+      socket.on("room:started", () => {
+        log("🚀 A sala foi iniciada!");
+      });
+    }
+
+    function joinRoom() {
+      if (!socket) return alert("Conecte primeiro!");
+
+      const playerName = document.getElementById("name").value;
+      const roomCode   = document.getElementById("room").value;
+
+      socket.emit("room:join", { roomCode, playerName });
+      log(`➡️ Você entrou na sala ${roomCode}`);
+    }
+
+    function startRoom() {
+      if (!socket) return alert("Conecte primeiro!");
+
+      const roomCode = document.getElementById("room").value;
+
+      socket.emit("room:start", { roomCode });
+      log("🚀 Você iniciou a sala: " + roomCode);
+    }
+  </script>
+
+</body>
+</html>
