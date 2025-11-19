@@ -1,0 +1,5 @@
+[
+  { "groupQuestion": "Qual é o seu hobby favorito?", "impostorQuestion": "O que você mais gosta de fazer no seu tempo livre?" },
+  { "groupQuestion": "Qual comida você mais gosta?", "impostorQuestion": "O que você costuma comer quando pode escolher?" },
+  { "groupQuestion": "Qual país gostaria de visitar?", "impostorQuestion": "Se pudesse viajar, pra onde iria?" }
+]
